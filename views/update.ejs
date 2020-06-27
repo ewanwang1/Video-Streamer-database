@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset='UTF-8'>
+
+		<style>
+			.label {
+				border: none;
+				color: black;
+				font-family: verdana;
+				font-size: 14px;
+			}
+
+			.button {
+				border: solid;
+				color: black;
+				padding: 10px 28px;
+				text-align: center;
+				font-family: verdana;
+				font-size: 15px;
+				margin: 4px 2px;
+				cursor: pointer;
+			}
+
+		</style>
+	</head>
+
+	<body style="font-family: verdana;background-color: lightblue;">
+		<h2>Update</h2>
+		<p>Choose a subscription type and update its' price.</p>
+		<br />
+
+		<form type="submit" action="" method="post">
+
+			<label for="b">Basic</label>
+			<input type="Radio" name="type" id="b" value="Basic">
+
+			<label for="s">Standard</label>
+			<input type="Radio" name="type" id="s" value="Standard">
+
+			<label for="p">Premium</label>
+			<input type="Radio" name="type" id="p" value="Premium"><br /><br />
+
+			<label class="label" for="price">New Price: </label>
+			<input type="text" id="price" name="price">
+
+			<input type='submit' value="Submit">
+
+		</form>
+
+		<br /><br />
+		<a href="/"><button class=button>RETURN TO MAIN</button></a>
+
+		<div id="a">
+			<p>Table</p>
+		</div>
+
+		<!-- Source for table generation code below: 
+						Author: PranchalKatiyar  
+						Title: How to convert JSON data to a html table using JavaScript/jQuery ?
+						Link: https://www.geeksforgeeks.org/how-to-convert-json-data-to-a-html-table-using-javascript-jquery/
+		
+						* this code was also used in select, project, join, nested, division.
+				-->
+		<script>
+
+			function createTable() {
+
+				// pass object from server to ejs. reponse client is now a regular array of js object
+				var responseClient = <%- JSON.stringify(response) %>;
+				const label = ["membershiptype", "price"];
+				buildTable(label, responseClient, document.getElementById("a"));
+				
+		
+			}
+
+			function buildTable(labels, objects, container) {
+				var table = document.createElement('table');
+				var thead = document.createElement('thead');
+				var tbody = document.createElement('tbody');
+
+				var theadTr = document.createElement('tr');
+				for (var i = 0; i < labels.length; i++) {
+					var theadTh = document.createElement('th');
+					theadTh.innerHTML = labels[i];
+					theadTr.appendChild(theadTh);
+				}
+				thead.appendChild(theadTr);
+				table.appendChild(thead);
+
+				for (j = 0; j < objects.length; j++) {
+					var tbodyTr = document.createElement('tr');
+					for (k = 0; k < labels.length; k++) {
+						var tbodyTd = document.createElement('td');
+						tbodyTd.innerHTML = objects[j][labels[k].toLowerCase()];
+						tbodyTr.appendChild(tbodyTd);
+					}
+					tbody.appendChild(tbodyTr);
+				}
+				table.appendChild(tbody);
+
+				container.appendChild(table);
+			}
+
+			createTable();
+		</script>
+
+
+	</body>
+
+
+
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='UTF-8'>
+
+		<style>
+			.label {
+				border: none;
+				color: black;
+				font-family: verdana;
+				font-size: 14px;
+			}
+
+			table, th, td {
+				border: 1px solid black;
+				font-family: helvetica;
+				background-color: white;
+			}
+
+			.button {
+				border: solid;
+				border-color: #8800cc;
+				height: 50px;
+				width: 150px;
+				text-align: center;
+				font-family: verdana;
+				font-size: 14px;
+				margin: 4px 2px;
+				cursor: pointer;
+			}
+
+			.button1 {background-color: #e6b3ff;}		
+		</style>
+	</head>
+	<body style="font-family: verdana;background-color: lightblue;">
+		<h2>Projection</h2>
+		<p>Select the attributes from <i>Customers</i> to be projected</p>
+<!--
+		<form type="submit" action="file:///Users/student/Desktop/m5-html/main.html">
+-->
+		<form type="submit" action="/project" method= "post" id="project_submit">
+
+			<input type="checkbox" id="cID" name="project[]" value="cID">
+			<label class="label" for="customerID">Customer ID </label><br/>
+
+			<input type="checkbox" id="email" name="project[]" value="email">
+			<label class="label" for="email"> Email Address </label><br/>
+
+			<input type="checkbox" id="cName" name="project[]" value="cName">
+			<label class="label" for="cName">Customer Name </label><br/>
+
+			<input type="checkbox" id="age" name="project[]" value="age">
+			<label class="label" for="age"> Age </label><br/>
+
+			<input type="checkbox" id="postalCode" name="project[]" value="postalCode">
+			<label class="label" for="postalCode"> Postal Code </label><br/><br/>
+
+			<input class=button button1 type='submit' value="Submit"> 
+
+		</form>
+
+		<button class=button button1 onclick="createTable()">VIEW TABLE</button><br/>
+
+		<a href="/"><button class=button button1>RETURN TO MAIN</button></a>
+
+
+		
+		<div id="a">
+			<p>Table</p>
+		</div>
+		
+		<!-- Source for table generation code below: 
+								Author: PranchalKatiyar  
+								Title: How to convert JSON data to a html table using JavaScript/jQuery ?
+								Link: https://www.geeksforgeeks.org/how-to-convert-json-data-to-a-html-table-using-javascript-jquery/
+				
+								* this code was also used in select, project, join, nested, division.
+						-->
+		<script>
+
+			function createTable() {
+
+				// pass object from server to ejs. reponse client is now a regular array of js object
+				var responseClient = <%- JSON.stringify(response) %>;
+				var colnClient = <%- JSON.stringify(coln) %>;
+				const label = colnClient;
+				buildTable(label, responseClient, document.getElementById("a"));
+
+			}
+
+			function buildTable(labels, objects, container) {
+				var table = document.createElement('table');
+				var thead = document.createElement('thead');
+				var tbody = document.createElement('tbody');
+
+				var theadTr = document.createElement('tr');
+				for (var i = 0; i < labels.length; i++) {
+					var theadTh = document.createElement('th');
+					theadTh.innerHTML = labels[i];
+					theadTr.appendChild(theadTh);
+				}
+				thead.appendChild(theadTr);
+				table.appendChild(thead);
+
+				for (j = 0; j < objects.length; j++) {
+					var tbodyTr = document.createElement('tr');
+					for (k = 0; k < labels.length; k++) {
+						var tbodyTd = document.createElement('td');
+						tbodyTd.innerHTML = objects[j][labels[k].toLowerCase()];
+						tbodyTr.appendChild(tbodyTd);
+					}
+					tbody.appendChild(tbodyTr);
+				}
+				table.appendChild(tbody);
+
+				container.appendChild(table);
+			}
+
+		</script>
+
+
+	</body>
+</html>
+
+
