@@ -28,13 +28,13 @@ var SQLresponse = "";
 
 
 
-app.get("/",function(req,res){
+app.get("/", function (req, res) {
     res.render("main");
 });
 
 
 //insert
-app.get("/insert",function(req,res){
+app.get("/insert", function (req, res) {
     let sql = `SELECT *
                   FROM videos
                   JOIN non_cartoon
@@ -43,22 +43,22 @@ app.get("/insert",function(req,res){
     db.any(sql)
         .then(resolve => {
             SQLresponse = resolve;
-            res.render("insert", {response:SQLresponse});
+            res.render("insert", { response: SQLresponse });
         })
         .catch(err => {
             console.log(err);
         });
 });
 
-app.post("/insert", function(req,res){
+app.post("/insert", function (req, res) {
     let userInput = req.body;
     let sql = `INSERT INTO video_specifics
                 VALUES ('${userInput.title}', ${userInput.year}, ${userInput.rating}); ` +
-                `INSERT INTO videos
+        `INSERT INTO videos
                 VALUES (${userInput.videoID},'${userInput.title}', ${userInput.year},${userInput.length}, '${userInput.description}', ${userInput.episode}); ` +
-                `INSERT INTO non_cartoon
+        `INSERT INTO non_cartoon
                  VALUES (${userInput.videoID}, '${userInput.location_setting}');` +
-                `SELECT *
+        `SELECT *
                   FROM videos
                   JOIN non_cartoon
                   ON videos.videoID = non_cartoon.videoID;`;
@@ -72,7 +72,7 @@ app.post("/insert", function(req,res){
 });
 
 //delete
-app.get("/delete",function(req,res){
+app.get("/delete", function (req, res) {
     let sql = `select * from membership;`;
     db.any(sql)
         .then(resolve => {
@@ -84,7 +84,7 @@ app.get("/delete",function(req,res){
         });
 });
 
-app.post("/delete",function(req,res){
+app.post("/delete", function (req, res) {
     let userInput = req.body;
     let sql = `DELETE FROM membership WHERE membershiptype = ${userInput.mtype};`;
     db.any(sql)
@@ -98,7 +98,7 @@ app.post("/delete",function(req,res){
 });
 
 //update
-app.get("/update",function(req,res){
+app.get("/update", function (req, res) {
     let sql = `select * from membership;`;
     db.any(sql)
         .then(resolve => {
@@ -110,7 +110,7 @@ app.get("/update",function(req,res){
         });
 });
 
-app.post("/update",function(req,res){
+app.post("/update", function (req, res) {
     let userInput = req.body;
     var userTypeSQL = "";
     switch (userInput.type) {
@@ -132,7 +132,7 @@ app.post("/update",function(req,res){
 
     db.any(sql)
         .then(resolve => {
-            res.redirect("update"); 
+            res.redirect("update");
         })
         .catch(err => {
             console.log(err);
@@ -140,20 +140,20 @@ app.post("/update",function(req,res){
 });
 
 //select
-app.get("/select",function(req,res){
+app.get("/select", function (req, res) {
     let sql = `SELECT *
                 FROM video_specifics;`;
     db.any(sql)
         .then(resolve => {
             SQLresponse = resolve;
-            res.render("select", {response: SQLresponse});
+            res.render("select", { response: SQLresponse });
         })
         .catch(err => {
             console.log(err);
         });
 });
 
-app.post("/select",function(req,res){
+app.post("/select", function (req, res) {
     let userInput = req.body;
 
     let sql = `SELECT * 
@@ -163,7 +163,7 @@ app.post("/select",function(req,res){
     db.any(sql)
         .then(resolve => {
             SQLresponse = resolve;
-            res.render("select", {response: SQLresponse});
+            res.render("select", { response: SQLresponse });
         })
         .catch(err => {
             console.log(err);
@@ -173,12 +173,12 @@ app.post("/select",function(req,res){
 
 
 //project
-app.get("/project",function(req,res){
+app.get("/project", function (req, res) {
     serverCln = [];
-    res.render("project", {response: SQLresponse, coln: serverCln});
+    res.render("project", { response: SQLresponse, coln: serverCln });
 });
 
-app.post("/project",function(req,res){
+app.post("/project", function (req, res) {
     let userInput = req.body;
 
     // let projectOptions = ["cID", "email", "cname", "age", "postalCode"];
@@ -188,9 +188,9 @@ app.post("/project",function(req,res){
     userInput.project.forEach(element => {
         switch (element) {
             case "cID":
-                if(startOfLoop){
+                if (startOfLoop) {
                     projectItemSQL += "customerid"
-                }else{
+                } else {
                     projectItemSQL += ",customerid"
                 }
                 serverCln.push("customerid")
@@ -227,7 +227,7 @@ app.post("/project",function(req,res){
                 }
                 serverCln.push("postalcode")
                 break;
-        
+
             default:
                 break;
         }
@@ -239,7 +239,7 @@ app.post("/project",function(req,res){
     db.any(sql)
         .then(resolve => {
             SQLresponse = resolve;
-            res.render("project",{response: SQLresponse, coln:serverCln})
+            res.render("project", { response: SQLresponse, coln: serverCln })
             SQLresponse = "";
         })
         .catch(err => {
@@ -248,23 +248,21 @@ app.post("/project",function(req,res){
 });
 
 //join
-app.get("/join",function(req,res){
-    res.render("join", {response: SQLresponse});
+app.get("/join", function (req, res) {
+    res.render("join", { response: SQLresponse });
 });
 
-app.post("/join",function(req,res){
+app.post("/join", function (req, res) {
     let userInput = req.body;
     let sql = `SELECT c.customerID, c.entity_name, c.age, v.videoID, v.title, v.video_year
                FROM customers c, videos v, recommendation r
                WHERE c.customerID = r.customerID AND v.videoID = r.movieID AND c.age > 19
-               AND c.age < 30;`; 
+               AND c.age < 30;`;
 
     db.any(sql)
         .then(resolve => {
             SQLresponse = resolve;
-            console.log(SQLresponse);
             res.render("join", { response: SQLresponse });
-            console.log("about to clear SQLresponse");
             SQLresponse = "";
 
         })
@@ -274,24 +272,24 @@ app.post("/join",function(req,res){
 });
 
 //Aggregation
-app.get("/aggregation",function(req,res){
+app.get("/aggregation", function (req, res) {
 
-    res.render("aggregation", {response: SQLresponse});
+    res.render("aggregation", { response: SQLresponse });
 });
 
-app.post("/aggregation",function(req,res){
+app.post("/aggregation", function (req, res) {
     let userInput = req.body;
     let sql = `SELECT *
                FROM video_specifics
                WHERE rating = (SELECT MAX(rating) 
                                FROM video_specifics);`;
-                            
+
     db.any(sql)
         .then(resolve => {
             SQLresponse = resolve;
-      
+
             res.render("aggregation", { response: SQLresponse });
-            
+
             SQLresponse = "";
         })
         .catch(err => {
@@ -301,11 +299,11 @@ app.post("/aggregation",function(req,res){
 });
 
 //nested, have to discuss what we want to do but ill leave in the template
-app.get("/nested",function(req,res){
-    res.render("nested", {response: SQLresponse});
+app.get("/nested", function (req, res) {
+    res.render("nested", { response: SQLresponse });
 });
 
-app.post("/nested",function(req,res){
+app.post("/nested", function (req, res) {
     let userInput = req.body;
     let sql = `Select v.title, v.video_year, count(*)
                 From adds a, video_specifics v
@@ -316,9 +314,7 @@ app.post("/nested",function(req,res){
     db.any(sql)
         .then(resolve => {
             SQLresponse = resolve;
-            console.log(SQLresponse);
             res.render("nested", { response: SQLresponse });
-            console.log("about to clear SQLresponse");
             SQLresponse = "";
 
         })
@@ -328,11 +324,11 @@ app.post("/nested",function(req,res){
 });
 
 
-app.get("/division",function(req,res){
-    res.render("division", {response: SQLresponse});
+app.get("/division", function (req, res) {
+    res.render("division", { response: SQLresponse });
 });
 
-app.post("/division",function(req,res){
+app.post("/division", function (req, res) {
     let sql = `SELECT c.customerID, c.entity_name, c.email
                FROM customers c
                WHERE NOT EXISTS ((SELECT v.videoID FROM videos v)
